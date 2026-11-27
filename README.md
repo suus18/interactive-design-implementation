@@ -6,6 +6,8 @@ Figma Make 导出的交互作品集网站。两屏：프로필 首页 + 프로�
 
 GitHub Pages：https://suus18.github.io/interactive-design-implementation/
 
+发布方式：仓库 Settings → Pages 的 Source 已设为 **GitHub Actions**，每次 push 到 `main` 都会由 `.github/workflows/deploy-pages.yml` 构建并部署，无需提交 `dist/`。
+
 ## 仓库结构
 
 - `src/` — 页面源码（React 19 + Vite 8 + Tailwind v4）
