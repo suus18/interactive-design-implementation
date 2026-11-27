@@ -1,0 +1,91 @@
+name: Deploy portfolio to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'ci-report.txt'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Unpack design assets from the bundled Figma export
+        run: unzip -o -q "Interactive Design Implementation.zip" -d _export
+
+      - name: Convert artwork to WebP
+        run: node scripts/make-webp.mjs _export/public/assets public/assets
+
+      - name: Subset the bundled fonts to the glyphs this site uses
+        run: |
+          python3 -m pip install --quiet fonttools brotli
+          mkdir -p public/fonts
+          for weight in Regular Medium SemiBold Bold; do
+            pyftsubset "_export/public/fonts/Pretendard-${weight}.woff2" \
+              --text-file=scripts/site-text.txt \
+              --flavor=woff2 \
+              --output-file="public/fonts/Pretendard-${weight}.woff2"
+          done
+          ls -l public/fonts
+
+      - name: Build
+        env:
+          FIGMA_PUBLIC_URL: /interactive-design-implementation
+        run: npm run build
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: Upload site artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+      - name: Write build report
+        if: always()
+        run: |
+          {
+            echo "run: ${{ github.run_id }} attempt: ${{ github.run_attempt }}"
+            echo "commit: ${{ github.sha }}"
+            find dist -type f -printf '%p %s\n' | sort
+          } > ci-report.txt 2>/dev/null || true
+
+      - name: Commit build report
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f ci-report.txt
+          git commit -m "chore: record build report [skip ci]" || exit 0
+          git push || exit 0
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

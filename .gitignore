@@ -1,0 +1,19 @@
+node_modules/
+dist/
+build/
+.cache/
+.env*
+.vite/
+vite.config.*.timestamp-*
+*.tsbuildinfo
+*-debug.log*
+logs/
+*.log
+.claude-replay.*
+.tmp-*
+/.figma/design-context/
+/_backup/
+
+# Platform-managed agentplat state, not project source.
+/.plugins/
+/.opencode-skills/
