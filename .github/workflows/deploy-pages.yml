@@ -32,8 +32,11 @@ jobs:
       - name: Unpack design assets from the bundled Figma export
         run: unzip -o -q "Interactive Design Implementation.zip" -d _export
 
-      - name: Convert artwork to WebP
-        run: node scripts/make-webp.mjs _export/public/assets public/assets
+      - name: Materialize artwork
+        run: |
+          mkdir -p public/assets public/fonts
+          cp _export/public/assets/*.svg public/assets/
+          node scripts/make-webp.mjs _export/public/assets public/assets
 
       - name: First build (collect the glyphs this site actually renders)
         env:
@@ -43,7 +46,6 @@ jobs:
       - name: Subset the bundled fonts to those glyphs
         run: |
           python3 -m pip install --quiet fonttools brotli
-          mkdir -p public/fonts
           python3 - <<'PY'
           import glob
 
