@@ -1,3 +1,15 @@
-run: 45973785637 attempt: 1
-commit: 8ebb113f23d2dbd032b44d1db118b39653f63e16
-total: 
+run: 45973889376 attempt: 1
+commit: 75e36d398be54dc846b4307f66d026b69029d9dc
+dist/assets/043dc.webp 139338
+dist/assets/9f3f4.webp 145404
+dist/assets/e29ae.webp 139290
+dist/assets/index-D7rz0T1V.css 20451
+dist/assets/index-DyxUBiXi.js 232830
+dist/favicon.svg 442
+dist/fonts/Pretendard-Bold.woff2 30412
+dist/fonts/Pretendard-Medium.woff2 30336
+dist/fonts/Pretendard-Regular.woff2 30388
+dist/fonts/Pretendard-SemiBold.woff2 30384
+dist/index.html 1264
+dist/routes.json 95
+total: 824K
