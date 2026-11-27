@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="IEUM">
+  <rect width="64" height="64" rx="14" fill="#0e60dd"/>
+  <text x="32" y="33" text-anchor="middle" dominant-baseline="middle"
+        font-family="Pretendard, 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif"
+        font-size="30" font-weight="700" fill="#ffffff" letter-spacing="1">IE</text>
+  <circle cx="32" cy="52" r="3" fill="#a73d70"/>
+</svg>

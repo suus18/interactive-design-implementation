@@ -1,0 +1,11 @@
+{
+  "title": "강민지 · 브랜드 비주얼 디자이너 포트폴리오",
+  "description": "홍익대학교 시각디자인학과 강민지의 브랜드 비주얼 디자인 포트폴리오입니다.",
+  "language": "ko",
+  "icons": {
+    "icon": "/favicon.svg"
+  },
+  "openGraph": {
+    "image": "/assets/e29ae.webp"
+  }
+}

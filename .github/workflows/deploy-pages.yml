@@ -35,19 +35,35 @@ jobs:
       - name: Convert artwork to WebP
         run: node scripts/make-webp.mjs _export/public/assets public/assets
 
-      - name: Subset the bundled fonts to the glyphs this site uses
+      - name: First build (collect the glyphs this site actually renders)
+        env:
+          FIGMA_PUBLIC_URL: /interactive-design-implementation
+        run: npm run build
+
+      - name: Subset the bundled fonts to those glyphs
         run: |
           python3 -m pip install --quiet fonttools brotli
           mkdir -p public/fonts
+          python3 - <<'PY'
+          import glob
+
+          chars = set()
+          for path in ['dist/index.html'] + glob.glob('dist/assets/*.js'):
+              with open(path, encoding='utf-8', errors='ignore') as handle:
+                  chars.update(handle.read())
+          with open('_subset-chars.txt', 'w', encoding='utf-8') as handle:
+              handle.write(''.join(sorted(chars)))
+          print('glyph pool:', len(chars))
+          PY
           for weight in Regular Medium SemiBold Bold; do
             pyftsubset "_export/public/fonts/Pretendard-${weight}.woff2" \
-              --text-file=scripts/site-text.txt \
+              --text-file=_subset-chars.txt \
               --flavor=woff2 \
               --output-file="public/fonts/Pretendard-${weight}.woff2"
           done
           ls -l public/fonts
 
-      - name: Build
+      - name: Final build with the fonts in place
         env:
           FIGMA_PUBLIC_URL: /interactive-design-implementation
         run: npm run build
@@ -69,6 +85,7 @@ jobs:
             echo "run: ${{ github.run_id }} attempt: ${{ github.run_attempt }}"
             echo "commit: ${{ github.sha }}"
             find dist -type f -printf '%p %s\n' | sort
+            echo "total: $(du -sh dist | cut -f1)"
           } > ci-report.txt 2>/dev/null || true
 
       - name: Commit build report
