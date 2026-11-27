@@ -1,0 +1,36 @@
+/* 移动端 / WebKit 兼容修正（必须在 index.css 之后引入，靠后覆盖）
+
+   1. 安全区：在浏览器（含微信内置浏览器）里打开时 env(safe-area-inset-top) 为 0，
+      原来用 max(59px, …) 强行留出 59px，导致顶部多出一大块空白。改为只用真实安全区，
+      只在“添加到主屏幕”全屏运行时才让出刘海高度。
+   2. 卡片分隔线：原设计是一张 195 × 0.57px 的 SVG 细线，WebKit 会把它当成坏图，
+      渲染出「?」占位方块。这里改用 CSS 画线（颜色跟随卡片主题色），并隐藏该图。
+   3. 底部安全区同样改为真实值，另加 12px 呼吸位，避免贴住浏览器底栏。 */
+
+:root {
+  --safe-area-top: env(safe-area-inset-top, 0px);
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.profile-header {
+  padding-top: calc(var(--safe-area-top) + 14px);
+  padding-bottom: 16px;
+}
+
+.detail-header {
+  padding-top: calc(var(--safe-area-top) + 6px);
+  padding-bottom: 6px;
+}
+
+.card-divider {
+  background: currentColor;
+}
+.card-divider img {
+  display: none;
+}
+
+.profile-body,
+.detail-content,
+.lightbox {
+  padding-bottom: calc(var(--safe-area-bottom) + 12px);
+}
